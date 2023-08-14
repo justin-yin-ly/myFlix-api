@@ -10,5 +10,146 @@
         <h1>myFlix API</h1>
         <p>Welcome! This is an API used to provide and display information
             about different movies, directors, and genres.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Request</th>
+                    <th>URL</th>
+                    <th>HTTP Method</th>
+                    <th>Request Body Data Format</th>
+                    <th>Response Body Data Format</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Get full list of movies</td>
+                    <td>/movies</td>
+                    <td>GET</td>
+                    <td>None</td>
+                    <td>A JSON Object containing data of all movies</td>
+                </tr>
+                <tr>
+                    <td>Get data about a single movie by title</td>
+                    <td>/movies/[title]</td>
+                    <td>GET</td>
+                    <td>None</td>
+                    <td>A JSON Object containing data of a single movie, with properties for
+                        the description, genre, director, image, and whether it's currently featured.
+                        Example:<br>
+                        <code>
+                            {<br>
+                                "Title" : "",<br>
+                                "Description" : "",<br>
+                                "Genre" : "{}",<br>
+                                "Director" : "",<br>
+                                "ImageURL" : "",<br>
+                                "Featured" : false<br>
+                            }
+                        </code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Get data about a genre by name</td>
+                    <td>/genres/[name]</td>
+                    <td>GET</td>
+                    <td>None</td>
+                    <td>A JSON Object containing data about a given genre, with properties for 
+                        the genre name and a brief description.
+                        Example: <br>
+                        <code>
+                            {<br>
+                                "Name" : "",<br>
+                                "Description" : ""<br>
+                            }
+                        </code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Get data about a director by name</td>
+                    <td>/directors/[name]</td>
+                    <td>GET</td>
+                    <td>None</td>
+                    <td>A JSON Object containing data about a given director, with properties for
+                        the director's name, a brief description, and the movies they've directed.
+                        Example:<br>
+                        <code>
+                            {<br>
+                                "Name" : "",<br>
+                                "Description" : "",<br>
+                                "Movies" : ""<br>
+                            }
+                        </code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Register a new user</td>
+                    <td>/users</td>
+                    <td>POST</td>
+                    <td>A JSON Object holding data about the user to add, structured as such:
+                        <code>
+                            {<br>
+                                "Name" : "",<br>
+                                "favMovies" : ""<br>
+                            }
+                        </code>
+                    </td>
+                    <td>A JSON Object holding data about the user that just registered, including an ID:
+                        <code>
+                            {<br>
+                                "id" : #,<br>
+                                "Name" : "",<br>
+                                "favMovies" : ""<br>
+                            }
+                        </code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Update a user's info</td>
+                    <td>/users/[name]</td>
+                    <td>PUT</td>
+                    <td>A JSON Object holding new data to put onto an existing user, structured as such:
+                        <code>
+                            {<br>
+                                "Name" : "",<br>
+                                "favMovies" : ""<br>
+                            }
+                        </code>
+                    </td>
+                    <td>A JSON Object holding data about the user whose info was just updated, including an ID:
+                        <code>
+                            {<br>
+                                "id" : #,<br>
+                                "Name" : "",<br>
+                                "favMovies" : ""<br>
+                            }
+                        </code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Add a movie to user's list of favorite movies</td>
+                    <td>/users/[name]/favorites/[title]</td>
+                    <td>POST</td>
+                    <td>None</td>
+                    <td>A text message indicating whether the desired movie was 
+                        successfully added to the given user's favorite list.</td>
+                </tr>
+                <tr>
+                    <td>Remove a movie to user's list of favorite movies</td>
+                    <td>/users/[name]/favorites/[title]</td>
+                    <td>DELETE</td>
+                    <td>None</td>
+                    <td>A text message indicating whether the desired movie was 
+                        successfully removed from the given user's favorite list.</td>
+                </tr>
+                <tr>
+                    <td>Remove an existing user from the resgistry</td>
+                    <td>/users/[name]</td>
+                    <td>DELETE</td>
+                    <td>None</td>
+                    <td>A text message indicating whether 
+                        the given user was successfully removed from the registry.</td>
+                </tr>
+            </tbody>
+        </table>
     </body>
 </html>
