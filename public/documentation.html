@@ -30,7 +30,7 @@
                 </tr>
                 <tr>
                     <td>Get data about a single movie by title</td>
-                    <td>/movies/[title]</td>
+                    <td>/movies/[Title]</td>
                     <td>GET</td>
                     <td>None</td>
                     <td>A JSON Object containing data of a single movie, with properties for
@@ -88,8 +88,9 @@
                     <td>A JSON Object holding data about the user to add, structured as such:
                         <code>
                             {<br>
-                                "Name" : "",<br>
-                                "favMovies" : ""<br>
+                                "Username" : "",<br>
+                                "Password" : "",<br>
+                                "Email" : ""<br>
                             }
                         </code>
                     </td>
@@ -97,21 +98,23 @@
                         <code>
                             {<br>
                                 "id" : #,<br>
-                                "Name" : "",<br>
-                                "favMovies" : ""<br>
+                                "Username" : "",<br>
+                                "Password" : "",<br>
+                                "Email" : ""<br>
                             }
                         </code>
                     </td>
                 </tr>
                 <tr>
                     <td>Update a user's info</td>
-                    <td>/users/[name]</td>
+                    <td>/users/[Username]</td>
                     <td>PUT</td>
                     <td>A JSON Object holding new data to put onto an existing user, structured as such:
                         <code>
                             {<br>
-                                "Name" : "",<br>
-                                "favMovies" : ""<br>
+                                "Username" : "",<br>
+                                "Password" : "",<br>
+                                "Email" : ""<br>
                             }
                         </code>
                     </td>
@@ -119,15 +122,30 @@
                         <code>
                             {<br>
                                 "id" : #,<br>
-                                "Name" : "",<br>
-                                "favMovies" : ""<br>
+                                "Username" : "",<br>
+                                "Password" : "",<br>
+                                "Email" : ""<br>
                             }
                         </code>
                     </td>
                 </tr>
                 <tr>
+                    <td>Get full list of users</td>
+                    <td>/users</td>
+                    <td>GET</td>
+                    <td>None</td>
+                    <td>A JSON Object containing data of all existing users</td>
+                </tr>
+                <tr>
+                    <td>Get a specific user by their username</td>
+                    <td>/users/[Username]</td>
+                    <td>GET</td>
+                    <td>None</td>
+                    <td>A JSON Object containing data of the specified user</td>
+                </tr>
+                <tr>
                     <td>Add a movie to user's list of favorite movies</td>
-                    <td>/users/[name]/favorites/[title]</td>
+                    <td>/users/[Username]/favorites/[MovieID]</td>
                     <td>POST</td>
                     <td>None</td>
                     <td>A text message indicating whether the desired movie was 
@@ -135,7 +153,7 @@
                 </tr>
                 <tr>
                     <td>Remove a movie to user's list of favorite movies</td>
-                    <td>/users/[name]/favorites/[title]</td>
+                    <td>/users/[Username]/favorites/[MovieID]</td>
                     <td>DELETE</td>
                     <td>None</td>
                     <td>A text message indicating whether the desired movie was 
@@ -143,7 +161,7 @@
                 </tr>
                 <tr>
                     <td>Remove an existing user from the resgistry</td>
-                    <td>/users/[name]</td>
+                    <td>/users/[Username]</td>
                     <td>DELETE</td>
                     <td>None</td>
                     <td>A text message indicating whether 
