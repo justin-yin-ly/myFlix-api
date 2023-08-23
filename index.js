@@ -33,6 +33,10 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+let auth = require('./auth')(app);
+const passport = require('passport');
+require('./passport');
+
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Uh oh, something went wrong!');
@@ -51,7 +55,7 @@ app.get('/secreturl', (req, res) => {
 });
 
 // Get full list of movies
-app.get('/movies', async (req, res) => {
+app.get('/movies', passport.authenticate('jwt', {session: false}), async (req, res) => {
   await Movies.find()
     .then((movies) => {
       res.status(201).json(movies);
@@ -63,8 +67,8 @@ app.get('/movies', async (req, res) => {
 });
 
 // Get data about a single movie by title
-app.get('/movies/:title', async (req, res) => {
-  await Movies.findOne({ Title: req.params.title })
+app.get('/movies/:title', passport.authenticate('jwt', {session: false}), async (req, res) => {
+  await Movies.findOne({ title: req.params.title })
   .then((movie) => {
     res.json(movie);
   })
@@ -75,7 +79,7 @@ app.get('/movies/:title', async (req, res) => {
 });
 
 // Get data about all genres
-app.get('/genres', async (req, res) => {
+app.get('/genres', passport.authenticate('jwt', {session: false}), async (req, res) => {
   await Genres.find()
     .then((genres) => {
       res.status(201).json(genres);
@@ -87,7 +91,7 @@ app.get('/genres', async (req, res) => {
 });
 
 // Get data about a genre by name
-app.get('/genres/:name', async (req, res) => {
+app.get('/genres/:name', passport.authenticate('jwt', {session: false}), async (req, res) => {
   await Genres.findOne({ name: req.params.name })
   .then((name) => {
     res.json(name);
@@ -99,7 +103,7 @@ app.get('/genres/:name', async (req, res) => {
 });
 
 // Get data about all directors
-app.get('/directors', async (req, res) => {
+app.get('/directors', passport.authenticate('jwt', {session: false}), async (req, res) => {
   await Directors.find()
     .then((directors) => {
       res.status(201).json(directors);
@@ -111,7 +115,7 @@ app.get('/directors', async (req, res) => {
 });
 
 // Get data about a director by name
-app.get('/directors/:name', async (req, res) => {
+app.get('/directors/:name', passport.authenticate('jwt', {session: false}), async (req, res) => {
   await Directors.findOne({ name: req.params.name })
   .then((name) => {
     res.json(name);
@@ -122,7 +126,7 @@ app.get('/directors/:name', async (req, res) => {
   });
 });
 
-// Register a new user
+// Register a new user - this shouldn't have passport authentication, since doing so means new users can't register because we'd be requiring them to be registered in order to register
 app.post('/users', async (req, res) => {
   await Users.findOne({ username: req.body.username })
     .then((user) => {
@@ -150,7 +154,7 @@ app.post('/users', async (req, res) => {
 });
 
 // Get all users
-app.get('/users', async (req, res) => {
+app.get('/users', passport.authenticate('jwt', {session: false}), async (req, res) => {
   await Users.find()
     .then((users) => {
       res.status(201).json(users);
@@ -162,7 +166,7 @@ app.get('/users', async (req, res) => {
 });
 
 // Get a user by username
-app.get('/users/:username', async (req, res) => {
+app.get('/users/:username', passport.authenticate('jwt', {session: false}), async (req, res) => {
   await Users.findOne({ username: req.params.username })
   .then((user) => {
     res.json(user);
@@ -174,7 +178,13 @@ app.get('/users/:username', async (req, res) => {
 });
 
 // Update a user's info
-app.put('/users/:username', async (req, res) => {
+app.put('/users/:username', passport.authenticate('jwt', {session: false}), async (req, res) => {
+  // Condition to make sure that a user can only edit their own info-----
+  if (req.user.username !== req.params.username){
+    return res.status(400).send('Permission denied');
+  }
+  // Condition ends -----------------------------------------------------
+
   await Users.findOneAndUpdate({ username: req.params.username},
     { $set:
       {
@@ -195,7 +205,7 @@ app.put('/users/:username', async (req, res) => {
 });
 
 // Add a movie to user's list of favorite movies
-app.post('/users/:username/favorites/:movieID', async (req, res) => {
+app.post('/users/:username/favorites/:movieID', passport.authenticate('jwt', {session: false}), async (req, res) => {
   await Users.findOneAndUpdate({ username: req.params.username }, {
     $push: {favoriteMovies: req.params.movieID }
   },
@@ -210,7 +220,7 @@ app.post('/users/:username/favorites/:movieID', async (req, res) => {
 });
 
 // Remove a movie to user's list of favorite movies
-app.delete('/users/:username/favorites/:movieID', async (req, res) => {
+app.delete('/users/:username/favorites/:movieID', passport.authenticate('jwt', {session: false}), async (req, res) => {
   await Users.findOneAndUpdate({ username: req.params.username }, {
     $pull: {favoriteMovies: req.params.movieID }
   },
@@ -225,7 +235,7 @@ app.delete('/users/:username/favorites/:movieID', async (req, res) => {
 });
 
 // Remove an existing user from the resgistry
-app.delete('/users/:username', async (req, res) => {
+app.delete('/users/:username', passport.authenticate('jwt', {session: false}), async (req, res) => {
   await Users.findOneAndRemove({ username: req.params.username })
     .then ((user) => {
       if (!user) {
