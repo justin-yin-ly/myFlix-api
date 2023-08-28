@@ -220,18 +220,34 @@ app.get('/users/:username', passport.authenticate('jwt', {session: false}), asyn
 });
 
 // Update a user's info
-app.put('/users/:username', passport.authenticate('jwt', {session: false}), async (req, res) => {
+app.put('/users/:username',
+ [
+   check('username', 'Username is required').isLength({min: 5}),
+   check('username', 'Username contains non alphanumeric characters, which is not allowed.').isAlphanumeric(),
+   check('password', 'Password is required.').not().isEmpty(),
+   check('email', 'Email does not appear to be valid').isEmail()
+ ],
+ passport.authenticate('jwt', {session: false}), async (req, res) => {
   // Condition to make sure that a user can only edit their own info-----
   if (req.user.username !== req.params.username){
     return res.status(400).send('Permission denied');
   }
   // Condition ends -----------------------------------------------------
 
+  // check validation object for errors
+  let errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({errors: errors.array()});
+  }
+
+  let hashedPassword = Users.hashPassword(req.body.password);
+
   await Users.findOneAndUpdate({ username: req.params.username},
     { $set:
       {
         username: req.body.username,
-        password: req.body.password,
+        password: hashedPassword,
         email: req.body.email,
         birthday: req.body.birthday
       }
