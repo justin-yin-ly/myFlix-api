@@ -1,5 +1,8 @@
 const express = require('express'),
-    morgan = require('morgan');
+    morgan = require('morgan'),
+    cors = require('cors'),
+    {check, validationResult} = require('express-validator'),
+    port = process.env.PORT || 8080;
 
 const app = express();
 
@@ -25,6 +28,23 @@ let requestTime = (req, res, next) => {
   req.requestTime = Date.now();
   next();
 };
+
+// This allows requests from all origins
+app.use(cors());
+
+// This makes it so that only specified origins in allowedOrigins can make requests
+// let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+// 
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     if(!origin) return callback(null, true);
+//     if(allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn't found in the list
+//       let message = `The CORS policy for this application doesn't allow access from the origin ` + origin;
+//       return callback(new Error(message), false);
+//     }
+//     return callback(null, true);
+//   }
+// }));
 
 app.use(myLogger);
 app.use(requestTime);
@@ -127,7 +147,24 @@ app.get('/directors/:name', passport.authenticate('jwt', {session: false}), asyn
 });
 
 // Register a new user - this shouldn't have passport authentication, since doing so means new users can't register because we'd be requiring them to be registered in order to register
-app.post('/users', async (req, res) => {
+app.post('/users', 
+  // Validation logic here for request
+  [
+    check('username', 'Username is required').isLength({min: 5}),
+    check('username', 'Username contains non alphanumeric characters, which is not allowed.').isAlphanumeric(),
+    check('password', 'Password is required.').not().isEmpty(),
+    check('email', 'Email does not appear to be valid').isEmail()
+  ],
+  async (req, res) => {
+
+  // check validation object for errors
+  let errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({errors: errors.array()});
+  }
+
+  let hashedPassword = Users.hashPassword(req.body.password);
   await Users.findOne({ username: req.body.username })
     .then((user) => {
       if (user) {
@@ -136,7 +173,7 @@ app.post('/users', async (req, res) => {
         Users
           .create({
             username: req.body.username,
-            password: req.body.password,
+            password: hashedPassword,
             email: req.body.email,
             birthday: req.body.birthday
           })
@@ -250,6 +287,6 @@ app.delete('/users/:username', passport.authenticate('jwt', {session: false}), a
     });
 });
 
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080.');
+app.listen(port, '0.0.0.0', () => {
+  console.log('Listening on Port ' + port);
 });
