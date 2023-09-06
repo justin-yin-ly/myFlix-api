@@ -35,21 +35,21 @@ let requestTime = (req, res, next) => {
 };
 
 // This allows requests from all origins
-app.use(cors());
+//app.use(cors());
 
 // This makes it so that only specified origins in allowedOrigins can make requests
-// let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
-// 
-// app.use(cors({
-//   origin: (origin, callback) => {
-//     if(!origin) return callback(null, true);
-//     if(allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn't found in the list
-//       let message = `The CORS policy for this application doesn't allow access from the origin ` + origin;
-//       return callback(new Error(message), false);
-//     }
-//     return callback(null, true);
-//   }
-// }));
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn't found in the list
+      let message = `The CORS policy for this application doesn't allow access from the origin ` + origin;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 app.use(myLogger);
 app.use(requestTime);
