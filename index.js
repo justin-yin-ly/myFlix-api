@@ -34,11 +34,11 @@ let requestTime = (req, res, next) => {
   next();
 };
 
-// This allows requests from all origins
-//app.use(cors());
+// This allows requests from all origins - this method is not recommended
+// app.use(cors());
 
 // This makes it so that only specified origins in allowedOrigins can make requests
-let allowedOrigins = ['http://localhost:8080', 'http://localhost:1234', 'http://testsite.com'];
+let allowedOrigins = ['http://localhost:8080', 'http://localhost:1234', 'http://testsite.com', 'https://cinedata.netlify.app'];
 
 app.use(cors({
   origin: (origin, callback) => {
