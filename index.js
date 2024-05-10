@@ -51,6 +51,10 @@ app.use(cors({
   }
 }));
 
+app.use(cors({
+  origin: 'https://justin-yin-ly.github.io/myFlix-angular-client/'
+}));
+
 app.use(myLogger);
 app.use(requestTime);
 app.use(morgan('common'));
