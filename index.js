@@ -37,6 +37,8 @@ let requestTime = (req, res, next) => {
 // This allows requests from all origins - this method is not recommended
 // app.use(cors());
 
+app.options('*', cors());
+
 // This makes it so that only specified origins in allowedOrigins can make requests
 let allowedOrigins = ['http://localhost:8080', 'http://localhost:4200', 'http://localhost:1234', 'http://testsite.com', 'https://cinedata.netlify.app', 'https://justin-yin-ly.github.io/myFlix-angular-client', 'https://justin-yin-ly.github.io/myFlix-angular-client/welcome'];
 
