@@ -43,7 +43,7 @@ app.options('*', cors());
  * An array that holds the list of allowed origins for use in CORS.
  * @global
  */
-let allowedOrigins = ['http://localhost:8080', 'http://localhost:4200', 'http://localhost:1234', 'http://testsite.com', 'https://cinedata.netlify.app', 'https://justin-yin-ly.github.io/myFlix-angular-client', 'https://justin-yin-ly.github.io/myFlix-angular-client/welcome'];
+let allowedOrigins = ['http://localhost:8080', 'http://localhost:4200', 'http://localhost:1234', 'http://testsite.com', 'https://cinedata.netlify.app', 'https://justin-yin-ly.github.io'];
 
 app.use(cors({
   origin: (origin, callback) => {
